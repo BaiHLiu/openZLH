@@ -2,7 +2,7 @@
 Description: 自律会生成宿舍卫生周总结
 Author: Catop
 Date: 2021-06-19 22:57:39
-LastEditTime: 2021-06-19 23:32:06
+LastEditTime: 2021-06-20 12:53:16
 '''
 #encoding:utf-8
 
@@ -34,6 +34,7 @@ def read_xls(fileName):
     table = srcFile.sheets()[0]
     
     rowsNum = table.nrows     #行数
+    rowsNum = table.ncols     #列数
     #获取第一列原始数据(班级)
     class_raw = table.col(0,start_rowx=1)
     #结构化dict
@@ -57,7 +58,8 @@ def read_xls(fileName):
     
 
     #获取各班级宿舍信息
-    dorm_raw = table.col(8,start_rowx=1)
+    dorm_raw = table.col(rowsNum-1,start_rowx=1)
+    #print(dorm_raw)
     for class_info in class_list:
         dorm_cont = {"A":0, "B":0, "C":0, "D":0}
         begin_idx = class_info['begin_idx']
@@ -123,7 +125,7 @@ def write_xls(fileName, class_list):
 def work(srcFile, desFile):
     try:
         class_list = read_xls(srcFile)
-        write_xls(desFile, class_list)
+        write_xls(desFile,class_list)
     except FileNotFoundError:
         print("[ERROR]找不到指定文件")
     except:
@@ -135,7 +137,7 @@ def work(srcFile, desFile):
 
 
 if __name__ == "__main__":
-    #work('./in.xls','./out.xls')
+    #work('./16in.xls','./16out.xls')
     if(len(sys.argv) == 3):
         work(sys.argv[1],sys.argv[2])
     else:
